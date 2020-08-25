@@ -3,9 +3,20 @@ const tasksToDoEl = document.querySelector("#tasks-to-do");
 
 const taskFormHandler = (event) => {
   event.preventDefault();
+  const taskNameInput = document.querySelector("input[name='task-name']").value;
+  const taskTypeInput = document.querySelector("select[name='task-type']")
+    .value;
+
+  if (!taskNameInput || !taskTypeInput) {
+    alert("You need to fill out the task form!");
+    return false;
+  }
+
+  formEl.reset();
+
   var taskDataObj = {
-    name: document.querySelector("input[name='task-name']"),
-    type: document.querySelector("select[name='task-type']"),
+    name: taskNameInput,
+    type: taskTypeInput,
   };
   createTaskEl(taskDataObj);
 };
@@ -16,7 +27,8 @@ const createTaskEl = (taskDataObj) => {
 
   const taskInfoEl = document.createElement("div");
   taskInfoEl.classList.add("task-info");
-  taskInfoEl.innerHTML = `<h3 class='task-name'>${taskDataObj.name.value}</h3><span class='task-type'>${taskDataObj.type.value}</span>`;
+
+  taskInfoEl.innerHTML = `<h3 class='task-name'>${taskDataObj.name}</h3><span class='task-type'>${taskDataObj.type}</span>`;
 
   listItemEl.appendChild(taskInfoEl);
   tasksToDoEl.appendChild(listItemEl);
