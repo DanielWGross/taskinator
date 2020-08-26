@@ -1,5 +1,7 @@
 const formEl = document.querySelector("#task-form");
 const tasksToDoEl = document.querySelector("#tasks-to-do");
+const tasksInProgressEl = document.querySelector("#tasks-in-progress");
+const tasksCompletedEl = document.querySelector("#tasks-completed");
 const pageContentEl = document.querySelector("#page-content");
 
 const uuidGenerator = (a) =>
@@ -88,14 +90,14 @@ const createTaskActions = (taskId) => {
   return actionContainerEl;
 };
 
-const deleteTask = function (taskId) {
+const deleteTask = (taskId) => {
   const selectedTask = document.querySelector(
     `.task-item[data-task-id='${taskId}']`
   );
   selectedTask.remove();
 };
 
-const editTask = function (taskId) {
+const editTask = (taskId) => {
   const selectedTask = document.querySelector(
     `.task-item[data-task-id='${taskId}']`
   );
@@ -108,7 +110,7 @@ const editTask = function (taskId) {
   formEl.setAttribute("data-task-id", taskId);
 };
 
-const taskButtonHandler = function (event) {
+const taskButtonHandler = (event) => {
   if (event.target.matches(".delete-btn")) {
     deleteTask(event.target.dataset.taskId);
   }
@@ -127,5 +129,25 @@ const completeEditTask = (taskDataObj) => {
   document.querySelector("#save-task").textContent = "Add Task";
 };
 
+const taskStatusChangeHandler = (event) => {
+  const taskId = event.target.getAttribute("data-task-id");
+  const statusValue = event.target.value.toLowerCase();
+  const selectedTask = document.querySelector(
+    `.task-item[data-task-id='${taskId}']`
+  );
+
+  switch (statusValue) {
+    case "to do":
+      tasksToDoEl.appendChild(selectedTask);
+      break;
+    case "in progress":
+      tasksInProgressEl.appendChild(selectedTask);
+      break;
+    default:
+      tasksCompletedEl.appendChild(selectedTask);
+  }
+};
+
 formEl.addEventListener("submit", taskFormHandler);
 pageContentEl.addEventListener("click", taskButtonHandler);
+pageContentEl.addEventListener("change", taskStatusChangeHandler);
