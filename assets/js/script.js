@@ -12,6 +12,7 @@ const taskFormHandler = (event) => {
   const taskNameInput = document.querySelector("input[name='task-name']").value;
   const taskTypeInput = document.querySelector("select[name='task-type']")
     .value;
+  const isEdit = formEl.hasAttribute("data-task-id");
 
   if (!taskNameInput || !taskTypeInput) {
     alert("You need to fill out the task form!");
@@ -20,11 +21,21 @@ const taskFormHandler = (event) => {
 
   formEl.reset();
 
-  var taskDataObj = {
-    name: taskNameInput,
-    type: taskTypeInput,
-  };
-  createTaskEl(taskDataObj);
+  if (isEdit) {
+    const taskId = formEl.getAttribute("data-task-id");
+    const taskDataObj = {
+      name: taskNameInput,
+      type: taskTypeInput,
+      id: taskId,
+    };
+    completeEditTask(taskDataObj);
+  } else {
+    const taskDataObj = {
+      name: taskNameInput,
+      type: taskTypeInput,
+    };
+    createTaskEl(taskDataObj);
+  }
 };
 
 const createTaskEl = (taskDataObj) => {
@@ -84,7 +95,7 @@ const deleteTask = function (taskId) {
   selectedTask.remove();
 };
 
-editTask = function (taskId) {
+const editTask = function (taskId) {
   const selectedTask = document.querySelector(
     `.task-item[data-task-id='${taskId}']`
   );
@@ -104,6 +115,16 @@ const taskButtonHandler = function (event) {
   if (event.target.matches(".edit-btn")) {
     editTask(event.target.dataset.taskId);
   }
+};
+
+const completeEditTask = (taskDataObj) => {
+  const selectedTask = document.querySelector(
+    `.task-item[data-task-id='${taskDataObj.id}']`
+  );
+  selectedTask.querySelector("h3.task-name").textContent = taskDataObj.name;
+  selectedTask.querySelector("span.task-type").textContent = taskDataObj.type;
+  formEl.removeAttribute("data-task-id");
+  document.querySelector("#save-task").textContent = "Add Task";
 };
 
 formEl.addEventListener("submit", taskFormHandler);
