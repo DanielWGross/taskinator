@@ -78,13 +78,31 @@ const createTaskActions = (taskId) => {
 };
 
 const deleteTask = function (taskId) {
-  const selectedTask = document.querySelector(`li[data-task-id='${taskId}']`);
+  const selectedTask = document.querySelector(
+    `.task-item[data-task-id='${taskId}']`
+  );
   selectedTask.remove();
+};
+
+editTask = function (taskId) {
+  const selectedTask = document.querySelector(
+    `.task-item[data-task-id='${taskId}']`
+  );
+  const taskName = selectedTask.querySelector("h3.task-name").textContent;
+  const taskType = selectedTask.querySelector("span.task-type").textContent;
+
+  document.querySelector("input[name='task-name']").value = taskName;
+  document.querySelector("select[name='task-type']").value = taskType;
+  document.querySelector("#save-task").textContent = "Save Task";
+  formEl.setAttribute("data-task-id", taskId);
 };
 
 const taskButtonHandler = function (event) {
   if (event.target.matches(".delete-btn")) {
     deleteTask(event.target.dataset.taskId);
+  }
+  if (event.target.matches(".edit-btn")) {
+    editTask(event.target.dataset.taskId);
   }
 };
 
