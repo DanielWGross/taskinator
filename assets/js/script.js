@@ -1,5 +1,6 @@
 const formEl = document.querySelector("#task-form");
 const tasksToDoEl = document.querySelector("#tasks-to-do");
+const pageContentEl = document.querySelector("#page-content");
 
 const uuidGenerator = (a) =>
   a
@@ -76,4 +77,16 @@ const createTaskActions = (taskId) => {
   return actionContainerEl;
 };
 
+const deleteTask = function (taskId) {
+  const selectedTask = document.querySelector(`li[data-task-id='${taskId}']`);
+  selectedTask.remove();
+};
+
+const taskButtonHandler = function (event) {
+  if (event.target.matches(".delete-btn")) {
+    deleteTask(event.target.dataset.taskId);
+  }
+};
+
 formEl.addEventListener("submit", taskFormHandler);
+pageContentEl.addEventListener("click", taskButtonHandler);
