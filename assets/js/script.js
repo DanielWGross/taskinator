@@ -149,6 +149,61 @@ const taskStatusChangeHandler = (event) => {
   }
 };
 
+const dragTaskHandler = (event) => {
+  const taskId = event.target.getAttribute("data-task-id");
+  event.dataTransfer.setData("text/plain", taskId);
+};
+
+const dropZoneHandler = (event) => {
+  event.preventDefault();
+  const taskListEl = event.target.closest(".task-list");
+  if (taskListEl) {
+    taskListEl.setAttribute(
+      "style",
+      "background: rgba(68, 233, 255, 0.7); border-style: dashed;"
+    );
+  }
+};
+
+const dropTaskHandler = (event) => {
+  const taskId = event.dataTransfer.getData("text/plain");
+  const draggableElement = document.querySelector(
+    `.task-item[data-task-id='${taskId}']`
+  );
+  const dropZoneEl = event.target.closest(".task-list");
+  const statusType = dropZoneEl.id;
+  const statusSelectEl = draggableElement.querySelector(
+    "select[name='status-change']"
+  );
+
+  switch (statusType) {
+    case "tasks-to-do":
+      statusSelectEl.selectedIndex = 0;
+      break;
+    case "tasks-in-progress":
+      statusSelectEl.selectedIndex = 1;
+      break;
+    case "tasks-completed":
+      statusSelectEl.selectedIndex = 2;
+      break;
+    default:
+      return;
+  }
+  dropZoneEl.appendChild(draggableElement);
+  dropZoneEl.removeAttribute("style");
+};
+
+const dragLeaveHandler = (event) => {
+  const dropZoneEl = event.target.closest(".task-list");
+  if (dropZoneEl) {
+    dropZoneEl.removeAttribute("style");
+  }
+};
+
 formEl.addEventListener("submit", taskFormHandler);
 pageContentEl.addEventListener("click", taskButtonHandler);
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
+pageContentEl.addEventListener("dragstart", dragTaskHandler);
+pageContentEl.addEventListener("dragover", dropZoneHandler);
+pageContentEl.addEventListener("drop", dropTaskHandler);
+pageContentEl.addEventListener("dragleave", dragLeaveHandler);
