@@ -27,43 +27,43 @@ const taskFormHandler = (event) => {
 };
 
 const createTaskEl = (taskDataObj) => {
+  // Generate random Id
   const uuid = uuidGenerator();
+  // List Item Element
   const listItemEl = document.createElement("li");
   listItemEl.setAttribute("data-task-id", uuid);
   listItemEl.classList.add("task-item");
-
+  // Task Info Element
   const taskInfoEl = document.createElement("div");
   taskInfoEl.classList.add("task-info");
-
   taskInfoEl.innerHTML = `<h3 class='task-name'>${taskDataObj.name}</h3><span class='task-type'>${taskDataObj.type}</span>`;
-
+  // Create Task Action Items
   const taskActionsEl = createTaskActions(uuid);
-
+  // Put it all together
   listItemEl.append(taskInfoEl, taskActionsEl);
   tasksToDoEl.appendChild(listItemEl);
 };
 
 const createTaskActions = (taskId) => {
+  // Action Container Element
   const actionContainerEl = document.createElement("div");
   actionContainerEl.classList.add("task-actions");
-
+  // Edit Button Element
   const editButtonEl = document.createElement("button");
   editButtonEl.textContent = "Edit";
   editButtonEl.classList.add("btn", "edit-btn");
   editButtonEl.setAttribute("data-task-id", taskId);
-
+  // Delete Button Element
   const deleteButtonEl = document.createElement("button");
   deleteButtonEl.textContent = "Delete";
   deleteButtonEl.classList.add("btn", "delete-btn");
   deleteButtonEl.setAttribute("data-task-id", taskId);
-
+  // Status Select Element
   const statusSelectEl = document.createElement("select");
   statusSelectEl.classList.add("select-status");
   statusSelectEl.setAttribute("name", "status-change");
   statusSelectEl.setAttribute("data-task-id", taskId);
-
-  actionContainerEl.append(editButtonEl, deleteButtonEl, statusSelectEl);
-
+  // Status Option Elements
   const statusChoices = ["To Do", "In Progress", "Completed"];
   statusChoices.forEach((status) => {
     const statusOptionEl = document.createElement("option");
@@ -71,7 +71,8 @@ const createTaskActions = (taskId) => {
     statusOptionEl.setAttribute("value", status);
     statusSelectEl.appendChild(statusOptionEl);
   });
-
+  // Put it all together
+  actionContainerEl.append(editButtonEl, deleteButtonEl, statusSelectEl);
   return actionContainerEl;
 };
 
