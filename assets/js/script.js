@@ -46,6 +46,7 @@ const createTaskEl = (taskDataObj) => {
   // List Item Element
   const listItemEl = document.createElement("li");
   listItemEl.setAttribute("data-task-id", uuid);
+  listItemEl.setAttribute("draggable", "true");
   listItemEl.classList.add("task-item");
   // Task Info Element
   const taskInfoEl = document.createElement("div");
