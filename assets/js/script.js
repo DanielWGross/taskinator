@@ -4,6 +4,8 @@ const tasksInProgressEl = document.querySelector("#tasks-in-progress");
 const tasksCompletedEl = document.querySelector("#tasks-completed");
 const pageContentEl = document.querySelector("#page-content");
 
+let tasks = [];
+
 const uuidGenerator = (a) =>
   a
     ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16)
@@ -35,6 +37,7 @@ const taskFormHandler = (event) => {
     const taskDataObj = {
       name: taskNameInput,
       type: taskTypeInput,
+      status: "to do",
     };
     createTaskEl(taskDataObj);
   }
@@ -56,6 +59,8 @@ const createTaskEl = (taskDataObj) => {
   const taskActionsEl = createTaskActions(uuid);
   // Put it all together
   listItemEl.append(taskInfoEl, taskActionsEl);
+  taskDataObj.id = uuid;
+  tasks.push(taskDataObj);
   tasksToDoEl.appendChild(listItemEl);
 };
 
@@ -96,6 +101,8 @@ const deleteTask = (taskId) => {
     `.task-item[data-task-id='${taskId}']`
   );
   selectedTask.remove();
+
+  tasks = tasks.filter((task) => task.id !== taskId);
 };
 
 const editTask = (taskId) => {
@@ -126,6 +133,14 @@ const completeEditTask = (taskDataObj) => {
   );
   selectedTask.querySelector("h3.task-name").textContent = taskDataObj.name;
   selectedTask.querySelector("span.task-type").textContent = taskDataObj.type;
+
+  tasks.forEach((task) => {
+    if (task.id === taskDataObj.id) {
+      task.name = taskDataObj.name;
+      task.type = taskDataObj.type;
+    }
+  });
+
   formEl.removeAttribute("data-task-id");
   document.querySelector("#save-task").textContent = "Add Task";
 };
@@ -147,6 +162,12 @@ const taskStatusChangeHandler = (event) => {
     default:
       tasksCompletedEl.appendChild(selectedTask);
   }
+
+  tasks.forEach((task) => {
+    if (task.id === taskId) {
+      task.status = statusValue;
+    }
+  });
 };
 
 const dragTaskHandler = (event) => {
@@ -189,6 +210,14 @@ const dropTaskHandler = (event) => {
     default:
       return;
   }
+
+  tasks.forEach((task) => {
+    if (task.id === taskId) {
+      task.status = statusSelectEl.value.toLowerCase();
+    }
+  });
+
+  console.log(tasks);
   dropZoneEl.appendChild(draggableElement);
   dropZoneEl.removeAttribute("style");
 };
