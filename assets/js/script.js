@@ -6,6 +6,10 @@ const pageContentEl = document.querySelector("#page-content");
 
 let tasks = [];
 
+const saveTasks = () => {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+};
+
 const uuidGenerator = (a) =>
   a
     ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16)
@@ -61,6 +65,7 @@ const createTaskEl = (taskDataObj) => {
   listItemEl.append(taskInfoEl, taskActionsEl);
   taskDataObj.id = uuid;
   tasks.push(taskDataObj);
+  saveTasks();
   tasksToDoEl.appendChild(listItemEl);
 };
 
@@ -103,6 +108,8 @@ const deleteTask = (taskId) => {
   selectedTask.remove();
 
   tasks = tasks.filter((task) => task.id !== taskId);
+
+  saveTasks();
 };
 
 const editTask = (taskId) => {
@@ -141,6 +148,8 @@ const completeEditTask = (taskDataObj) => {
     }
   });
 
+  saveTasks();
+
   formEl.removeAttribute("data-task-id");
   document.querySelector("#save-task").textContent = "Add Task";
 };
@@ -168,6 +177,8 @@ const taskStatusChangeHandler = (event) => {
       task.status = statusValue;
     }
   });
+
+  saveTasks();
 };
 
 const dragTaskHandler = (event) => {
@@ -217,7 +228,8 @@ const dropTaskHandler = (event) => {
     }
   });
 
-  console.log(tasks);
+  saveTasks();
+
   dropZoneEl.appendChild(draggableElement);
   dropZoneEl.removeAttribute("style");
 };
