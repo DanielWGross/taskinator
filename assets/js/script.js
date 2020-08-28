@@ -4,7 +4,18 @@ const tasksInProgressEl = document.querySelector("#tasks-in-progress");
 const tasksCompletedEl = document.querySelector("#tasks-completed");
 const pageContentEl = document.querySelector("#page-content");
 
+const isEmpty = (arr) => !Array.isArray(arr) || arr.length === 0;
+
 let tasks = [];
+
+const loadTasks = () => {
+  let storedTasks = localStorage.getItem("tasks");
+  if (!storedTasks) {
+    return;
+  }
+  storedTasks = JSON.parse(storedTasks);
+  storedTasks.forEach((task) => createTaskEl(task));
+};
 
 const saveTasks = () => {
   localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -66,7 +77,17 @@ const createTaskEl = (taskDataObj) => {
   taskDataObj.id = uuid;
   tasks.push(taskDataObj);
   saveTasks();
-  tasksToDoEl.appendChild(listItemEl);
+
+  switch (taskDataObj.status) {
+    case "to do":
+      tasksToDoEl.appendChild(listItemEl);
+      break;
+    case "in progress":
+      tasksInProgressEl.appendChild(listItemEl);
+      break;
+    default:
+      tasksCompletedEl.appendChild(listItemEl);
+  }
 };
 
 const createTaskActions = (taskId) => {
@@ -248,3 +269,5 @@ pageContentEl.addEventListener("dragstart", dragTaskHandler);
 pageContentEl.addEventListener("dragover", dropZoneHandler);
 pageContentEl.addEventListener("drop", dropTaskHandler);
 pageContentEl.addEventListener("dragleave", dragLeaveHandler);
+
+loadTasks();
